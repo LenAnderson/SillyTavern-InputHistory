@@ -1,4 +1,41 @@
-import { eventSource, event_types } from '../../../../script.js';
+import { eventSource, event_types, saveSettingsDebounced } from '../../../../script.js';
+import { extension_settings } from '../../../extensions.js';
+import { registerSlashCommand } from '../../../slash-commands.js';
+import { isTrueBoolean } from '../../../utils.js';
+
+class Settings {
+    /**@type {Number}*/ maxHistory = 10;
+}
+/**@type {Settings}*/
+const settings = Object.assign(new Settings, extension_settings.inputHistory ?? {});
+extension_settings.inputHistory = settings;
+
+registerSlashCommand('inputhistory-config',
+    (args, value)=>{
+        if (!args.key) {
+            toastr.error('Required argument "key" missing for /inputHistory-conf');
+            return;
+        }
+        const keys = ['maxHistory'];
+        const types = {
+            maxHistory: Number,
+        };
+        if (!keys.includes(args.key)) {
+            toastr.error(`Invalid "key" argument "${args.key}" supplied for /inputHistory-conf`);
+            return;
+        }
+        if (isTrueBoolean(args.get)) {
+            toastr.info(`Input History setting ${args.key} = ${JSON.stringify(settings[args.key])}`);
+            return JSON.stringify(settings[args.key]);
+        }
+        settings[args.key] = types[args.key](value.trim());
+        saveSettingsDebounced();
+    },
+    ['ih-config'],
+    '<span class="monospace">[key=maxHistory] [optional get=true] (optional new config value)</span> – Change Input History configuration. Use <code>get=true</code> to retrieve the current value.',
+    true,
+    true,
+);
 
 eventSource.on(event_types.APP_READY, async()=>{
     $('#send_textarea').on('keydown', (evt) => {
@@ -35,7 +72,7 @@ export function addToInputHistory(text) {
         const history = getInputHistory();
         if (history[0] != text) {
             history.unshift(text);
-            while (history.length > 10) {
+            while (history.length > settings.maxHistory) {
                 history.pop();
             }
             setInputHistory(history);
