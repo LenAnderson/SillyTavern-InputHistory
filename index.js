@@ -86,6 +86,7 @@ export function inputHistoryBack() {
         inputHistoryIdx++;
     }
     $('#send_textarea').val(history[inputHistoryIdx]);
+    $('#send_textarea').trigger('input');
 }
 export function inputHistoryForward() {
     const history = getInputHistory();
@@ -97,4 +98,5 @@ export function inputHistoryForward() {
     } else {
         $('#send_textarea').val(history[inputHistoryIdx]);
     }
+    $('#send_textarea').trigger('input');
 }
