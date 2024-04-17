@@ -87,6 +87,7 @@ export function inputHistoryBack() {
     }
     $('#send_textarea').val(history[inputHistoryIdx]);
     $('#send_textarea').trigger('input');
+    document.querySelector('#send_textarea').dispatchEvent(new Event('input', { bubbles:true }));
 }
 export function inputHistoryForward() {
     const history = getInputHistory();
@@ -99,4 +100,5 @@ export function inputHistoryForward() {
         $('#send_textarea').val(history[inputHistoryIdx]);
     }
     $('#send_textarea').trigger('input');
+    document.querySelector('#send_textarea').dispatchEvent(new Event('input', { bubbles:true }));
 }
