@@ -9,6 +9,8 @@ class Settings {
 /**@type {Settings}*/
 const settings = Object.assign(new Settings, extension_settings.inputHistory ?? {});
 extension_settings.inputHistory = settings;
+/**@type {HTMLTextAreaElement} */
+const ta = document.querySelector('#send_textarea');
 
 registerSlashCommand('inputhistory-config',
     (args, value)=>{
@@ -85,9 +87,8 @@ export function inputHistoryBack() {
     if (inputHistoryIdx + 1 < history.length) {
         inputHistoryIdx++;
     }
-    $('#send_textarea').val(history[inputHistoryIdx]);
-    $('#send_textarea').trigger('input');
-    document.querySelector('#send_textarea').dispatchEvent(new Event('input', { bubbles:true }));
+    ta.value = history[inputHistoryIdx];
+    ta.dispatchEvent(new Event('input', { bubbles:true }));
 }
 export function inputHistoryForward() {
     const history = getInputHistory();
@@ -95,10 +96,9 @@ export function inputHistoryForward() {
         inputHistoryIdx--;
     }
     if (history.length == 0 || inputHistoryIdx < 0) {
-        $('#send_textarea').val('');
+        ta.value = '';
     } else {
-        $('#send_textarea').val(history[inputHistoryIdx]);
+        ta.value = history[inputHistoryIdx];
     }
-    $('#send_textarea').trigger('input');
-    document.querySelector('#send_textarea').dispatchEvent(new Event('input', { bubbles:true }));
+    ta.dispatchEvent(new Event('input', { bubbles:true }));
 }
