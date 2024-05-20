@@ -21,7 +21,7 @@ const ta = document.querySelector('#send_textarea');
 SlashCommandParser.addCommandObject(SlashCommand.fromProps({ name: 'inputhistory-config',
     callback: ({ key, get }, value)=>{
         if (!key) {
-            toastr.error('Required argument "key" missing for /inputHistory-conf');
+            toastr.error('Required argument "key" missing for /inputhistory-conf');
             return;
         }
         const keys = ['maxHistory'];
@@ -29,7 +29,7 @@ SlashCommandParser.addCommandObject(SlashCommand.fromProps({ name: 'inputhistory
             maxHistory: Number,
         };
         if (!keys.includes(key)) {
-            toastr.error(`Invalid "key" argument "${key}" supplied for /inputHistory-conf`);
+            toastr.error(`Invalid "key" argument "${key}" supplied for /inputhistory-conf`);
             return;
         }
         if (isTrueBoolean(get)) {
@@ -64,10 +64,10 @@ SlashCommandParser.addCommandObject(SlashCommand.fromProps({ name: 'inputhistory
     helpString: 'Change Input History configuration. Use <code>get=true</code> to retrieve the current value.',
 }));
 
-SlashCommandParser.addCommandObject(SlashCommand.fromProps({ name: 'inputHistory-add',
+SlashCommandParser.addCommandObject(SlashCommand.fromProps({ name: 'inputhistory-add',
     callback: (args, value)=>{
         if (value.trim() == '') {
-            toastr.error('Required string missing for /inputHistory-add');
+            toastr.error('Required string missing for /inputhistory-add');
             return;
         }
         addToInputHistory(value);
