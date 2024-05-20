@@ -15,9 +15,9 @@ extension_settings.inputHistory = settings;
 /**@type {HTMLTextAreaElement} */
 const ta = document.querySelector('#send_textarea');
 
-registerSlashCommand('inputhistory-config',
-    (args, value)=>{
-        if (!args.key) {
+SlashCommandParser.addCommandObject(SlashCommand.fromProps({ name: 'inputhistory-config',
+    callback: ({ key, get }, value)=>{
+        if (!key) {
             toastr.error('Required argument "key" missing for /inputHistory-conf');
             return;
         }
@@ -25,22 +25,41 @@ registerSlashCommand('inputhistory-config',
         const types = {
             maxHistory: Number,
         };
-        if (!keys.includes(args.key)) {
-            toastr.error(`Invalid "key" argument "${args.key}" supplied for /inputHistory-conf`);
+        if (!keys.includes(key)) {
+            toastr.error(`Invalid "key" argument "${key}" supplied for /inputHistory-conf`);
             return;
         }
-        if (isTrueBoolean(args.get)) {
-            toastr.info(`Input History setting ${args.key} = ${JSON.stringify(settings[args.key])}`);
-            return JSON.stringify(settings[args.key]);
+        if (isTrueBoolean(get)) {
+            toastr.info(`Input History setting ${key} = ${JSON.stringify(settings[key])}`);
+            return JSON.stringify(settings[key]);
         }
-        settings[args.key] = types[args.key](value.trim());
+        settings[key] = types[key](value.trim());
         saveSettingsDebounced();
     },
-    ['ih-config'],
-    '<span class="monospace">[key=maxHistory] [optional get=true] (optional new config value)</span> – Change Input History configuration. Use <code>get=true</code> to retrieve the current value.',
-    true,
-    true,
-);
+    aliases: ['ih-config'],
+    namedArgumentList: [
+        SlashCommandNamedArgument.fromProps({ name: 'key',
+            description: 'Key of the setting to change or retrieve',
+            typeList: [ARGUMENT_TYPE.STRING],
+            enumList: ['maxHistory'],
+            isRequired: true,
+        }),
+        SlashCommandNamedArgument.fromProps({ name: 'get',
+            description: 'Whether to retrieve the setting\'s current value without changing it.',
+            typeList: [ARGUMENT_TYPE.BOOLEAN],
+            isRequired: false,
+            defaultValue: 'false',
+            enumList: ['true', 'false'],
+        }),
+    ],
+    unnamedArgumentList: [
+        SlashCommandArgument.fromProps({ description: 'the new config value',
+            typeList: [ARGUMENT_TYPE.NUMBER],
+            isRequired: false,
+        }),
+    ],
+    helpString: 'Change Input History configuration. Use <code>get=true</code> to retrieve the current value.',
+}));
 
 SlashCommandParser.addCommandObject(SlashCommand.fromProps({ name: 'inputHistory-add',
     callback: (args, value)=>{
