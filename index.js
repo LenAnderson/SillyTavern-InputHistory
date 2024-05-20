@@ -2,6 +2,9 @@ import { eventSource, event_types, saveSettingsDebounced } from '../../../../scr
 import { extension_settings } from '../../../extensions.js';
 import { registerSlashCommand } from '../../../slash-commands.js';
 import { isTrueBoolean } from '../../../utils.js';
+import { SlashCommand } from '../../../slash-commands/SlashCommand.js';
+import { ARGUMENT_TYPE, SlashCommandArgument, SlashCommandNamedArgument } from '../../../slash-commands/SlashCommandArgument.js';
+import { SlashCommandParser } from '../../../slash-commands/SlashCommandParser.js';
 
 class Settings {
     /**@type {Number}*/ maxHistory = 10;
@@ -38,6 +41,24 @@ registerSlashCommand('inputhistory-config',
     true,
     true,
 );
+
+SlashCommandParser.addCommandObject(SlashCommand.fromProps({ name: 'inputHistory-add',
+    callback: (args, value)=>{
+        if (value.trim() == '') {
+            toastr.error('Required string missing for /inputHistory-add');
+            return;
+        }
+        addToInputHistory(value);
+    },
+    aliases: ['ih-add'],
+    unnamedArgumentList: [
+        SlashCommandArgument.fromProps({ description: 'string to add to input history',
+            typeList: [ARGUMENT_TYPE.STRING],
+            isRequired: true,
+        }),
+    ],
+    helpString: 'Adds input string to Input History (typically used for Quick Reply macros).',
+}));
 
 eventSource.on(event_types.APP_READY, async()=>{
     $('#send_textarea').on('keydown', (evt) => {
