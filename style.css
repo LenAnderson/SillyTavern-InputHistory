@@ -1,0 +1,16 @@
+.autoComplete > .item[data-option-type="inputHistory"] {
+	> .type { color: var(--ac-color-string); }
+	> .specs {
+		grid-column: 2 / 4;
+		> .name {
+			white-space: pre-wrap;
+		}
+	}
+	> .help { display: none; }
+}
+
+.stih--clone {
+	position: fixed;
+	width: unset;
+	z-index: 50000;
+}

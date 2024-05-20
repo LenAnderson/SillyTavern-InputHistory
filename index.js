@@ -1,10 +1,13 @@
 import { eventSource, event_types, saveSettingsDebounced } from '../../../../script.js';
+import { AutoCompleteNameResult } from '../../../autocomplete/AutoCompleteNameResult.js';
 import { extension_settings } from '../../../extensions.js';
-import { registerSlashCommand } from '../../../slash-commands.js';
 import { isTrueBoolean } from '../../../utils.js';
 import { SlashCommand } from '../../../slash-commands/SlashCommand.js';
 import { ARGUMENT_TYPE, SlashCommandArgument, SlashCommandNamedArgument } from '../../../slash-commands/SlashCommandArgument.js';
 import { SlashCommandParser } from '../../../slash-commands/SlashCommandParser.js';
+
+import { InputHistoryAutoComplete } from './src/InputHistoryAutoComplete.js';
+import { InputHistoryAutoCompleteOption } from './src/InputHistoryAutoCompleteOption.js';
 
 class Settings {
     /**@type {Number}*/ maxHistory = 10;
@@ -92,6 +95,49 @@ eventSource.on(event_types.APP_READY, async()=>{
                 inputHistoryForward();
             }
         }
+    });
+
+    const taClone = /**@type{HTMLTextAreaElement}*/(ta.cloneNode(true));
+    taClone.classList.add('stih--clone');
+    let isAc = false;
+    const ac = new InputHistoryAutoComplete(
+        taClone,
+        ()=>isAc,
+        async(text, index)=>{
+            const result = new AutoCompleteNameResult(
+                taClone.value,
+                index,
+                getInputHistory().map(it=>new InputHistoryAutoCompleteOption(it)),
+            );
+            result.start = 0;
+            return result;
+        },
+    );
+    ac.onHide = ()=>{
+        isAc = false;
+        taClone.remove();
+        ta.value = taClone.value;
+        ta.focus();
+        ta.dispatchEvent(new Event('input', { bubbles:true }));
+    };
+
+    ta.addEventListener('keydown', async(evt)=>{
+        if (!(evt.altKey && evt.key == 'h')) return;
+        evt.preventDefault();
+        evt.stopPropagation();
+        evt.stopImmediatePropagation();
+        taClone.value = ta.value;
+        ta.value = '';
+        ta.dispatchEvent(new Event('input', { bubbles:true }));
+        isAc = true;
+        const rect = ta.getBoundingClientRect();
+        taClone.style.left = `${rect.left}px`;
+        taClone.style.right = `${window.innerWidth - rect.right}px`;
+        taClone.style.top = `${rect.top}px`;
+        taClone.style.bottom = `${window.innerHeight - rect.bottom}px`;
+        document.body.append(taClone);
+        taClone.focus();
+        ac.show(true, true);
     });
 });
 eventSource.on(event_types.GENERATION_STARTED, ()=>{

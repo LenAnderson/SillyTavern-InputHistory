@@ -4,7 +4,7 @@
     "requires": [],
     "optional": [],
     "js": "index.js",
-    "css": "",
+    "css": "style.css",
     "author": "LenAnderson",
     "version": "1.4.0",
     "homePage": "https://github.com/LenAnderson/SillyTavern-InputHistory"
