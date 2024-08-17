@@ -1,0 +1,106 @@
+.stih--buttons {
+    order: 3;
+    display: flex;
+	margin-left: -5px;
+
+	.stih--button {
+		flex: 1 1 auto;
+		display: flex;
+		align-items: center;
+		height: auto;
+		margin: 0;
+		font-size: 0.5em;
+		background-color: transparent;
+		opacity: 0.5;
+		transition: 200ms;
+		&:hover {
+			opacity: 1;
+			background-color: var(--white30a);
+		}
+	}
+	.stih--arrows {
+		display: flex;
+		flex-direction: column;
+		.stih--button {
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+	}
+}
+
+
+.stih--history {
+	filter: drop-shadow(1px 1px 2px var(--black50a));
+    z-index: 30000;
+    overflow-x: clip;
+	overflow-y: auto;
+    border-radius: 10px;
+    aspect-ratio: unset;
+    padding: 5px;
+    display: flex;
+	flex-direction: column-reverse;
+	background-color: var(--secondaryBg, var(--SmartThemeBlurTintColor));
+    container-type: inline-size;
+
+	position: absolute;
+    bottom: 100%;
+    right: 0;
+	min-height: 2em;
+    max-height: calc(50dvh);
+    width: 100%;
+    // transition: calc(1ms * var(--stcdx--transitionTime));
+	transition: 200ms;
+	transform-origin: calc(100% - 0.5em) calc(100% + 0.5em);
+	scale: 1 0;
+	font-size: 0.5em;
+	&.stih--active {
+		scale: 1;
+	}
+
+	.stih--item {
+		padding: 0.25em 1em 0.25em 0.25em;
+		opacity: 0.5;
+		background-color: rgb(255 255 255 / 0);
+		cursor: pointer;
+		transition: 200ms;
+		display: flex;
+		gap: 0.5em;
+		align-items: baseline;
+		transform: translateX(0);
+		&:hover, &.stih--chat:not(.stih--current):hover, &:has([contenteditable]) {
+			opacity: 1;
+			background-color: rgb(255 255 255 / 0.0625);
+		}
+		&.stih--current {
+			font-weight: bold;
+		}
+		&.stih--remove {
+			transform: translateX(150%);
+		}
+		.stih--icon {
+			flex: 0 0 auto;
+			width: 1.25em;
+			text-align: center;
+		}
+		.stih--label {
+			flex: 1 1 auto;
+		}
+		.stih--title {
+			font-size: 0.75em;
+			color: color-mix(in srgb, var(--SmartThemeBodyColor) 50%, transparent 50%);
+			white-space: pre-wrap;
+			tab-size: 2;
+			&.stih--code {
+				font-family: var(--monoFontFamily);
+			}
+			&::first-line {
+				font-size: calc(0.9em / 0.75);
+				color: var(--SmartThemeBodyColor);
+			}
+		}
+	}
+}
+
+html > body #nonQRFormItems .stih--hidden {
+	display: none;
+}
