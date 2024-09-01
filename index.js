@@ -19,6 +19,8 @@ extension_settings.inputHistory = settings;
 
 /**@type {HTMLTextAreaElement} */
 const ta = document.querySelector('#send_textarea');
+/**@type {string} */
+let taValue;
 /**@type {HTMLElement} */
 let buttonWrap;
 /**@type {HTMLElement} */
@@ -221,6 +223,7 @@ eventSource.on(event_types.APP_READY, async()=>{
         }
     });
     ta.addEventListener('input', ()=>{
+        if (ta.value.trim() != '') taValue = ta.value;
         if (!historyMenu) return;
         const text = ta.value.trim();
         if (text.length == 0) {
@@ -241,7 +244,7 @@ eventSource.on(event_types.APP_READY, async()=>{
     updateButtons();
 });
 eventSource.on(event_types.GENERATION_STARTED, ()=>{
-    addToInputHistory(ta.value);
+    addToInputHistory(taValue);
 });
 
 
