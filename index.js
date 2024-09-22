@@ -243,7 +243,9 @@ eventSource.on(event_types.APP_READY, async()=>{
     });
     updateButtons();
 });
-eventSource.on(event_types.GENERATION_STARTED, ()=>{
+// GENERATION_ENTERED was added in 1.12.6 and emits before commands are processed
+const addHistoryEventType = event_types.GENERATION_ENTERED ??= event_types.GENERATION_STARTED;
+eventSource.on(addHistoryEventType, ()=>{
     addToInputHistory(taValue);
 });
 
